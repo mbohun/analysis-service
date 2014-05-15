@@ -17,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.Arrays;
+
 import org.ala.layers.intersect.SimpleRegion;
 import org.ala.spatial.analysis.index.LayerFilter;
 import org.ala.spatial.analysis.service.AlocServiceImpl;
@@ -24,7 +25,7 @@ import org.ala.spatial.analysis.service.AlocSettings;
 
 /**
  * Use to run ALOC requests.
- * 
+ *
  * @author Adam
  */
 public class AnalysisJobAloc extends AnalysisJob {
@@ -55,14 +56,14 @@ public class AnalysisJobAloc extends AnalysisJob {
         resolution = resolution_;
 
         layerCount = envlist.split(":").length;
-        
+
         if (region != null) {
             cells = (int) Math.ceil((region.getWidth() / Double.parseDouble(resolution))
                     * (region.getHeight() / Double.parseDouble(resolution)));
         } else {
             cells = 1000000; //or something
         }
-        
+
         stageTimes = new long[4];
 
         setStage(0);
@@ -77,7 +78,10 @@ public class AnalysisJobAloc extends AnalysisJob {
         try {
             //get extents from aloc run
             StringBuffer extents = new StringBuffer();
-            BufferedReader br = new BufferedReader(new FileReader(filepath + "extents.txt"));
+
+            File file = new File(filepath + "extents.txt");
+
+            BufferedReader br = new BufferedReader(new FileReader(file));
             int width = Integer.parseInt(br.readLine());
             int height = Integer.parseInt(br.readLine());
             double xmin = Double.parseDouble(br.readLine());
@@ -113,7 +117,7 @@ public class AnalysisJobAloc extends AnalysisJob {
             }
             flegend.close();
 
-            StringBuffer metadata = new StringBuffer();            
+            StringBuffer metadata = new StringBuffer();
             BufferedReader fmetadata = new BufferedReader(new FileReader(filepath + "classification.html"));
             while ((line = fmetadata.readLine()) != null) {
                 metadata.append(line);
@@ -305,7 +309,9 @@ public class AnalysisJobAloc extends AnalysisJob {
             msets.setEnvList(Arrays.asList(envnameslist));
             msets.setNumberOfGroups(numberOfGroups);
             msets.setEnvPath(cutDataPath);          //use (possibly) cut layers
-            msets.setOutputPath(currentPath + "output" + File.separator + "aloc" + File.separator + getName() + File.separator);
+            File dir = new File(currentPath + "output" + File.separator + "aloc" + File.separator + getName() + File.separator);
+            dir.mkdirs();
+            msets.setOutputPath(dir.getPath() + File.separator);
 
             AlocServiceImpl aloc = new AlocServiceImpl();
             aloc.setAlocSettings(msets);

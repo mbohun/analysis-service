@@ -17,11 +17,10 @@ import java.io.Serializable;
 
 /**
  * container for layer filter;
- *
+ * <p/>
  * - includes minimum and maximum for environmental layers
  *
  * @author adam
- *
  */
 public class LayerFilter extends Object implements Serializable {
 
@@ -32,28 +31,45 @@ public class LayerFilter extends Object implements Serializable {
     String layername = "";
     /**
      * for environmental layers
-     *
+     * <p/>
      * filter minimum
      */
     double minimum_value = 0;
     /**
      * for environmental layers
-     *
+     * <p/>
      * filter maximum
      */
     double maximum_value = 0;
+    /**
+     * for contextual layers
+     * <p/>
+     * list of layer pids
+     */
+    String[] ids = null;
 
     /**
-     * Construct a new filter.
+     * Construct a new filter for environmental layers
      *
-     * @param layername name of this layer as String.
-     * @param min minimum bound as double.
-     * @param max maximum bound as double.
+     * @param layername name of this layer as String.  See layersdb.fields.id
+     * @param min       minimum bound as double.
+     * @param max       maximum bound as double.
      */
     public LayerFilter(String layername, double min, double max) {
         this.layername = layername;
         this.minimum_value = min;
         this.maximum_value = max;
+    }
+
+    /**
+     * Construct a new filter for contextual layers
+     *
+     * @param layername name of this layer as String.  See layersdb.fields.id
+     * @param ids       String array containing layersdb.objects.id values for shapes in this layer
+     */
+    public LayerFilter(String layername, String[] ids) {
+        this.layername = layername;
+        this.ids = ids;
     }
 
     /**
@@ -67,7 +83,7 @@ public class LayerFilter extends Object implements Serializable {
 
     /**
      * for environmental
-     *
+     * <p/>
      * gets minimum applied
      *
      * @return
@@ -78,7 +94,7 @@ public class LayerFilter extends Object implements Serializable {
 
     /**
      * for environmental
-     *
+     * <p/>
      * gets maximum applied
      *
      * @return
@@ -88,6 +104,19 @@ public class LayerFilter extends Object implements Serializable {
     }
 
     /**
+     * for contextual
+     * <p/>
+     * get layer objects pids.  see layersdb.objects.id
+     *
+     * @return
+     */
+    public String[] getIds() {
+        return ids;
+    }
+
+    /**
+     * Environmental ONLY
+     * <p/>
      * test if a layer value is within the LayerFilter range.
      *
      * @param value number to test as double.
@@ -99,8 +128,9 @@ public class LayerFilter extends Object implements Serializable {
 
     /**
      * parse a string into an array of LayerFilters.
-     *
+     * <p/>
      * e.g. "ENVELOPE(el600,1,4:el801,9.6,20.3)" or "el600,1,4:el801,9.6,20.3"
+     * and for contextual layers "ENVELOPE(cl904,pid1,pid2,pid3)"
      *
      * @param s String to parse.
      * @return array of filters as LayerFilter[].
@@ -125,7 +155,7 @@ public class LayerFilter extends Object implements Serializable {
 
     /**
      * Parse a single filter term into a new LayerFilter.
-     *
+     * <p/>
      * e.g. "el600,1,4" or "ENVELOPE(el600,1,4)"
      *
      * @param s term to parse.
@@ -138,6 +168,17 @@ public class LayerFilter extends Object implements Serializable {
 
         String[] tokens = s.split(",");
 
-        return new LayerFilter(tokens[0], Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2]));
+        if (tokens[0].startsWith("el")) {
+            return new LayerFilter(tokens[0], Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2]));
+        } else {
+            //contextual, get ids
+            String[] ids = new String[tokens.length - 1];
+            System.arraycopy(tokens, 1, ids, 0, ids.length);
+            return new LayerFilter(tokens[0], ids);
+        }
+    }
+
+    public boolean isContextual() {
+        return layername.startsWith("cl");
     }
 }

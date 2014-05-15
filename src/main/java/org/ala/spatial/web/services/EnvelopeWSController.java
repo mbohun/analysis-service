@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.ala.layers.grid.Grid2Shape;
 import org.ala.layers.intersect.Grid;
 import org.ala.spatial.analysis.index.LayerFilter;
@@ -41,7 +42,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class EnvelopeWSController {
 
     @RequestMapping(value = "/ws/envelope", method = {RequestMethod.POST, RequestMethod.GET})
-    public @ResponseBody
+    public
+    @ResponseBody
     String envelope(HttpServletRequest req) {
         try {
             String currentPath = AlaspatialProperties.getBaseOutputDir();

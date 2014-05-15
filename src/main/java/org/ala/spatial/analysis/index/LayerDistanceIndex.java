@@ -24,17 +24,19 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
+
 import org.ala.layers.client.Client;
 import org.ala.layers.intersect.Grid;
 import org.ala.spatial.util.AlaspatialProperties;
 import org.ala.spatial.util.GridCutter;
+import org.apache.commons.io.FileUtils;
 
 /**
  * Generates inter layer association distances for analysis environmental grid
  * files.
- *
+ * <p/>
  * Operates on layers-store prepared analysis grid files.
- *
+ * <p/>
  * Path to analysis grid files is set by layer.dir in alaspatial.properties.
  *
  * @author Adam
@@ -43,17 +45,16 @@ public class LayerDistanceIndex {
 
     /**
      * Filename of the layer distances store.
-     *
+     * <p/>
      * Actual file is located in workingdir set in alaspatial.properties.
      */
     final public static String LAYER_DISTANCE_FILE = "layerDistances.properties";
 
     /**
-     *
-     * @param threadcount number of threads to run analysis.
+     * @param threadcount    number of threads to run analysis.
      * @param onlyThesePairs array of distances to run as fieldId1 + " " +
-     * fieldId2 where fieldId1.compareTo(fieldId2) &lt 0 or null for all missing
-     * distances.
+     *                       fieldId2 where fieldId1.compareTo(fieldId2) &lt 0 or null for all missing
+     *                       distances.
      * @throws InterruptedException
      */
     public void occurrencesUpdate(int threadcount, String[] onlyThesePairs) throws InterruptedException {
@@ -189,8 +190,17 @@ public class LayerDistanceIndex {
         Map<String, Double> map = new ConcurrentHashMap<String, Double>();
         BufferedReader br = null;
         try {
-            br = new BufferedReader(new FileReader(AlaspatialProperties.getAnalysisWorkingDir()
-                    + LAYER_DISTANCE_FILE));
+            File file = new File(AlaspatialProperties.getAnalysisWorkingDir()
+                    + LAYER_DISTANCE_FILE);
+
+            //attempt to create empty file if it does not exist
+            if (!new File(AlaspatialProperties.getAnalysisWorkingDir()).exists()) {
+                new File(AlaspatialProperties.getAnalysisWorkingDir()).mkdirs();
+            }
+            if (!file.exists()) {
+                FileUtils.writeStringToFile(file, "");
+            }
+            br = new BufferedReader(new FileReader(file));
 
             String line;
             while ((line = br.readLine()) != null) {
