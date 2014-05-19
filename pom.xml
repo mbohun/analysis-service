@@ -311,26 +311,6 @@
 			<version>3.2.0.Final</version>
 			<type>jar</type>
 		</dependency>
-        <dependency>
-            <groupId>org.apache.odftoolkit</groupId>
-            <artifactId>simple-odf</artifactId>
-            <version>0.8-incubating</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.odftoolkit</groupId>
-            <artifactId>simple-odf</artifactId>
-            <version>0.8-incubating</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.odftoolkit</groupId>
-            <artifactId>simple-odf</artifactId>
-            <version>0.8-incubating</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.odftoolkit</groupId>
-            <artifactId>simple-odf</artifactId>
-            <version>0.8-incubating</version>
-        </dependency>
     </dependencies>
 	<repositories>
 		<!-- For JSR 303 and Hibernate Validator only - Encourage JBoss to publish 
