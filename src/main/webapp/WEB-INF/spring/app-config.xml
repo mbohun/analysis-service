@@ -9,11 +9,7 @@
 	<!-- Scans the classpath of this application for @Components to deploy as beans -->
 	<context:component-scan base-package="org.ala.spatial" />
 
-	<!-- Application Message Bundle -->
-	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-		<property name="basename" value="/WEB-INF/messages/messages" />
-		<property name="cacheSeconds" value="0" />
-	</bean>
+    <import resource="file:/data/alaspatial/config/alaspatial-data-config.xml" />
 
 	<!-- Configures Spring MVC -->
 	<import resource="mvc-config.xml" />
