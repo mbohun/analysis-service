@@ -22,6 +22,7 @@ import java.io.IOException;
 
 import org.ala.layers.intersect.Grid;
 import org.ala.layers.intersect.SimpleRegion;
+import org.ala.layers.intersect.SimpleShapeFile;
 
 /**
  * Generate a sites by species table.
@@ -51,8 +52,8 @@ public class SitesBySpecies {
         this.resolution = resolution;
         this.bbox = bbox;
 
-        width = (int) ((bbox[2] - bbox[0]) / resolution);
-        height = (int) ((bbox[3] - bbox[1]) / resolution);
+        width = (int) Math.ceil((bbox[2] - bbox[0]) / resolution);
+        height = (int) Math.ceil((bbox[3] - bbox[1]) / resolution);
     }
 
     /**
@@ -60,8 +61,8 @@ public class SitesBySpecies {
      */
     void setResolution(double resolution) {
         this.resolution = resolution;
-        width = (int) ((bbox[2] - bbox[0]) / resolution);
-        height = (int) ((bbox[3] - bbox[1]) / resolution);
+        width = (int) Math.ceil((bbox[2] - bbox[0]) / resolution);
+        height = (int) Math.ceil((bbox[3] - bbox[1]) / resolution);
     }
 
     /**
@@ -69,8 +70,52 @@ public class SitesBySpecies {
      */
     void setBBox(double[] bbox) {
         this.bbox = bbox;
-        width = (int) ((bbox[2] - bbox[0]) / resolution);
-        height = (int) ((bbox[3] - bbox[1]) / resolution);
+        width = (int) Math.ceil((bbox[2] - bbox[0]) / resolution);
+        height = (int) Math.ceil((bbox[3] - bbox[1]) / resolution);
+    }
+
+    public static void main(String [] args) {
+
+
+        try {
+            SimpleRegion sr = SimpleShapeFile.parseWKT("POLYGON((110.0 -45.0,165.0 -45.0,165.0 -10.0,110.0 -10.0,110.0 -45.0))");
+            Records r = new Records("/data/sxs.records");
+
+            String outputDir = "/data/sxs/";
+
+            double resolution = 1;
+            double [] bbox = {110, -45, 165, -10};
+
+
+            //update bbox with spatial extent of records
+            double minx = 180, miny = 90, maxx = -180, maxy = -90;
+            for (int i = 0; i < r.getRecordsSize(); i++) {
+                minx = Math.min(minx, r.getLongitude(i));
+                maxx = Math.max(maxx, r.getLongitude(i));
+                miny = Math.min(miny, r.getLatitude(i));
+                maxy = Math.max(maxy, r.getLatitude(i));
+            }
+            minx -= resolution;
+            miny -= resolution;
+            maxx += resolution;
+            maxy += resolution;
+            bbox[0] = Math.max(bbox[0], minx);
+            bbox[2] = Math.min(bbox[2], maxx);
+            bbox[1] = Math.max(bbox[1], miny);
+            bbox[3] = Math.min(bbox[3], maxy);
+
+
+            SitesBySpecies sxs = new SitesBySpecies(resolution, bbox);
+
+            sxs.write(r, outputDir, sr, null);
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     /**
@@ -128,12 +173,13 @@ public class SitesBySpecies {
 
         int[][][] bsRows = new int[1][][];
         int[] counts = new int[2];
+        boolean [] used = new boolean[records.getRecordsSize()];
         for (int row = 0; row < height; row++) {
-            bsRows[0] = getNextIntArrayRow(records, row, uniqueSpeciesCount, bsRows[0]);
+            bsRows[0] = getNextIntArrayRow(records, row, uniqueSpeciesCount, bsRows[0], used);
             for (int i = 0; i < width; i++) {
 
-                double longitude = (row + 0.5) * resolution + bbox[0];
-                double latitude = (i + 0.5) * resolution + bbox[1];
+                double longitude = (i + 0.5) * resolution + bbox[0];
+                double latitude = (row + 0.5) * resolution + bbox[1];
                 if ((region == null || region.isWithin_EPSG900913(longitude, latitude))
                         && (envelopeGrid == null || envelopeGrid.getValues2(new double[][]{{longitude, latitude}})[0] > 0)) {
 
@@ -143,15 +189,15 @@ public class SitesBySpecies {
                         totalSpeciesCounts[n] += bsRows[0][i][n];
                     }
 
-                    if (sum > 0) {
+                    if (sum >= 0) {
                         fw.append("\n\"");
-                        fw.append(String.valueOf(i * resolution + this.bbox[0]));
+                        fw.append(String.valueOf(i * resolution + bbox[0]));
                         fw.append("_");
-                        fw.append(String.valueOf(row * resolution + this.bbox[1]));
+                        fw.append(String.valueOf(row * resolution + bbox[1]));
                         fw.append("\",");
-                        fw.append(String.valueOf(i * resolution + this.bbox[0]));
+                        fw.append(String.valueOf(i * resolution + bbox[0]));
                         fw.append(",");
-                        fw.append(String.valueOf(row * resolution + this.bbox[1]));
+                        fw.append(String.valueOf(row * resolution + bbox[1]));
                         for (int n = 0; n < uniqueSpeciesCount; n++) {
                             fw.append(",");
                             fw.append(String.valueOf(bsRows[0][i][n]));
@@ -211,7 +257,7 @@ public class SitesBySpecies {
      * @param bs
      * @return
      */
-    int[][] getNextIntArrayRow(Records records, int row, int uniqueSpeciesCount, int[][] bs) {
+    int[][] getNextIntArrayRow(Records records, int row, int uniqueSpeciesCount, int[][] bs, boolean [] used) {
         //translate into bitset for each grid cell
         if (bs == null) {
             bs = new int[width][uniqueSpeciesCount];
@@ -223,14 +269,19 @@ public class SitesBySpecies {
             }
         }
 
+        int count = 0;
         for (int i = 0; i < records.getRecordsSize(); i++) {
-            int y = (int) ((records.getLatitude(i) - bbox[1]) / resolution);
+            if (!used[i]) {
+                int y = (int) ((records.getLatitude(i) - bbox[1]) / resolution);
 
-            if (y == row) {
-                int x = (int) ((records.getLongitude(i) - bbox[0]) / resolution);
+                if (y == row) {
+                    int x = (int) ((records.getLongitude(i) - bbox[0]) / resolution);
 
-                if (x >= 0 && x < width) {
-                    bs[x][records.getSpeciesNumber(i)]++;
+                    if (x >= 0 && x < width) {
+                        used[i] = true;
+                        bs[x][records.getSpeciesNumber(i)]++;
+                        count++;
+                    }
                 }
             }
         }
