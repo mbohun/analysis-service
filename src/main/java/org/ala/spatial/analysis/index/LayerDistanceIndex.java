@@ -13,23 +13,18 @@
  */
 package org.ala.spatial.analysis.index;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.LinkedBlockingQueue;
-
 import org.ala.layers.client.Client;
 import org.ala.layers.intersect.Grid;
 import org.ala.spatial.util.AlaspatialProperties;
 import org.ala.spatial.util.GridCutter;
 import org.apache.commons.io.FileUtils;
+
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Generates inter layer association distances for analysis environmental grid
@@ -268,6 +263,15 @@ public class LayerDistanceIndex {
         }
 
         return false;
+    }
+
+    public static void all() {
+        try {
+            LayerDistanceIndex ldi = new LayerDistanceIndex();
+            ldi.occurrencesUpdate(1, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 

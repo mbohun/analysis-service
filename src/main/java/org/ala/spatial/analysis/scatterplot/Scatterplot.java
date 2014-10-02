@@ -2,7 +2,6 @@ package org.ala.spatial.analysis.scatterplot;
 
 import au.com.bytecode.opencsv.CSVReader;
 import org.ala.layers.client.Client;
-import org.ala.layers.dto.Field;
 import org.ala.layers.dto.IntersectionFile;
 import org.ala.layers.intersect.Grid;
 import org.ala.layers.intersect.SimpleRegion;
@@ -17,7 +16,6 @@ import org.ala.spatial.util.GridCutter;
 import org.ala.spatial.util.Zipper;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.jfree.chart.ChartFactory;
@@ -40,9 +38,7 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYZDataset;
 import org.jfree.ui.RectangleAnchor;
 import org.jfree.ui.RectangleEdge;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.springframework.util.FileCopyUtils;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
@@ -51,8 +47,6 @@ import java.io.*;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.List;
-
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -738,7 +732,7 @@ public class Scatterplot {
                     return 0;
                 }
                 float[] d = legend.getMinMax();
-                return d == null ? 0 : d[0];
+                return d.length > 0 ? 0 : d[0];
             }
 
             @Override
@@ -747,7 +741,7 @@ public class Scatterplot {
                     return 1;
                 }
                 float[] d = legend.getMinMax();
-                return d == null ? 0 : d[1];
+                return d.length > 0 ? 0 : d[1];
             }
 
             @Override
@@ -842,7 +836,7 @@ public class Scatterplot {
                 int latitudeColumn = findInArray("latitude", csv.get(0));
                 int idColumn = findInArray("id", csv.get(0));
                 int colourColumn = -1;
-                if (!scatterplotStyleDTO.getColourMode().equalsIgnoreCase("-1")) {
+                if (!"-1".equals(scatterplotStyleDTO.getColourMode())) {
                     colourColumn = findInArray(translateFieldForSolr(scatterplotStyleDTO.getColourMode()), csv.get(0));
                     if (colourColumn == -1) {
                         resampleColourMode = true;
