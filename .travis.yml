@@ -9,5 +9,5 @@ before_script:
 script: mvn clean install deploy
 env:
   global:
-  - secure: Nza4kHKw97/JxLVlipGhRHieiLljyY3vdPNMBt3+lwmq/a/1JndvOu8WUI85h2na7fLh8meHpDfxkDzoEyspxCTfoap71aICzzungI475NORLo3PcuGcEyzLFLERnrMxVdRuqMGlMMyBTMzs3/zWzNVgNIhTXvyqqMRerijTtmo=
-  - secure: KDnX9hbvzAgzvQYqnklbOUOCw+IPkAKQOmlst+x0e4URIuSBPMfxhJ4rGoEv3rV0pkqauIdmrI/lar2vesn+OU3o1286p50vrghr5hE2r+AzYtZVqe5rH0dFFaUr8bEYXesldV2l3tbC1o9wCkcLyYm2CwMXwv9x1QZhSU59beg=
+  - secure: f4bfLr10QhhtXr/jUiOOadCGHMI8sdxu8M8D/jOnW++NMeLzCvV6sgpvaBRxW15PcuSWlc5xAI55mA0j4lH03JkOU0Yuk7WpzsfXfLI0jGLtk92cyqfxx9K86iCSz+E+Xa7ukM+dBfrb/qQwefIowC/0WEe8bhV8bMmlL4eIrto=
+  - secure: HApXsfd9Oq+9oEMKNRT3/6BPdm7SPfL2Zv8Rt60oTyiDHspU40EiIMUumySczruH0L7SROl7xhtKh/QejWoqvq0Oi/QaTKvWLHF/89Ws/fNqzCAJgPC6g54NY6kOH+1GsqvucnbfhU3JEouzqYsVapfGx2mgtzhF293fDdML7Ao=

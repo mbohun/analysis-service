@@ -331,7 +331,7 @@
 		</repository>
 		<repository>
 			<id>GeoTools repo</id>
-			<url>http://maven.geotools.fr/repository</url>
+			<url>http://repo.opengeo.org/</url>
 		</repository>
 		<repository>
 			<id>Hibernate Spatial repo</id>

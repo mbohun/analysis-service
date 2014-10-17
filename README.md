@@ -1,1 +1,1 @@
-### analysis-service   [![Build Status](https://travis-ci.org/AtlasOfLivingAustralia/analysis-service.svg?branch=master)](https://travis-ci.org/AtlasOfLivingAustralia/analysis-service)
+### analysis-service   [![Build Status](https://travis-ci.org/mbohun/analysis-service.svg?branch=master)](https://travis-ci.org/mbohun/analysis-service)
