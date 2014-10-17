@@ -339,8 +339,18 @@
 		</repository>
 		<repository>
 			<id>opengeo</id>
-			<url>http://repo.opengeo.org</url>
+			<url>http://download.osgeo.org/webdav/geotools/</url>
 		</repository>
+<!--
+		<repository>
+		  <snapshots>
+		    <enabled>true</enabled>
+		  </snapshots>
+		  <id>boundless</id>
+		  <name>Boundless Maven Repository</name>
+		  <url>http://repo.boundlessgeo.com/main</url>
+		</repository>
+-->
 		<!-- ALA repository -->
 		<repository>
 			<id>ala-repository</id>
