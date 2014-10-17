@@ -13,14 +13,17 @@
     <scm>
         <developerConnection>scm:svn:https://alageospatialportal.googlecode.com/svn/trunk/alaspatial/</developerConnection>
     </scm>
-
     <distributionManagement>
-        <downloadUrl>https://maven.ala.org.au/repository</downloadUrl>
-        <repository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>ala-repository</id>
-            <url>${ala.repository.url}</url>
-        </repository>
+      <repository>
+	<id>ala-repo</id>
+	<name>Internal Releases</name>
+	<url>http://ala-wonder.it.csiro.au/nexus/content/repositories/releases/</url>
+      </repository>
+      <snapshotRepository>
+	<id>ala-repo</id>
+	<name>Internal Releases</name>
+	<url>http://ala-wonder.it.csiro.au/nexus/content/repositories/snapshots/</url>
+      </snapshotRepository>
     </distributionManagement>
 
 	<properties>
@@ -341,16 +344,6 @@
 			<id>opengeo</id>
 			<url>http://download.osgeo.org/webdav/geotools/</url>
 		</repository>
-<!--
-		<repository>
-		  <snapshots>
-		    <enabled>true</enabled>
-		  </snapshots>
-		  <id>boundless</id>
-		  <name>Boundless Maven Repository</name>
-		  <url>http://repo.boundlessgeo.com/main</url>
-		</repository>
--->
 		<!-- ALA repository -->
 		<repository>
 			<id>ala-repository</id>
