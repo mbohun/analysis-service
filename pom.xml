@@ -333,10 +333,6 @@
 			</snapshots>
 		</repository>
 		<repository>
-			<id>GeoTools repo</id>
-			<url>http://repo.opengeo.org/</url>
-		</repository>
-		<repository>
 			<id>Hibernate Spatial repo</id>
 			<url>http://www.hibernatespatial.org/repository</url>
 		</repository>
